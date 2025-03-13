@@ -1,9 +1,11 @@
 const { runSQL } = require("./db");
 const { gen } = require("./gemini");
+const cors = require("cors");
 
 const express = require("express");
 const app = express();
-const port = 3000;
+app.use(cors());
+const port = 1904;
 
 app.get("/chat", (req, res) => {
   try {
