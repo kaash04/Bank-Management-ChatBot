@@ -24,8 +24,20 @@ If the text is for creating a new customer, make sure all necessary fields are g
 If the answer/response to the text is output of the sql query instead, then give the sql query in specified format, followed by just "SQL" in 2nd line of response.
 And the natural language text provided is:
 `;
-const gen = async (inp) => {
-  const result = await model.generateContent(prompt + inp);
+
+const paraphrasePrompt = `You are given a pair of user input and generated output. you need to paraphrase the output in user readable format. Make sure the output is in normal text, does not contain an decorations, tables, etc. If there is any data with fields in response, convert it to paragraph OR simply put it in new lines in a readble format.`;
+const paraphrasePrompt2 = `You will be given below a string. if it is normal string, make sure its gramatically correct and return it as response. If it is an [Object] make sure to convert and paraphrase the following to make it readable paragraph. Avoid an special text decorations.`;
+
+const paraphrase = async (ques, ans) => {
+  const result = model.generateContent(
+    paraphrasePrompt2 + "\nGiven String: " + ans
+  );
   return result;
+};
+
+const gen = async (inp) => {
+  const response = await model.generateContent(prompt + inp);
+  const result = await paraphrase(inp, response);
+  return response;
 };
 module.exports = { gen };
